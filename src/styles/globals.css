@@ -1,0 +1,228 @@
+/* src/styles/globals.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================
+   RESET Y BASE
+   =========================== */
+@layer base {
+  * {
+    @apply antialiased;
+  }
+  
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-body text-primary bg-white;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display uppercase tracking-wide;
+  }
+  
+  h1 {
+    @apply text-display-lg md:text-display-xl;
+  }
+  
+  h2 {
+    @apply text-display-md md:text-display-lg;
+  }
+  
+  h3 {
+    @apply text-display-sm md:text-display-md;
+  }
+  
+  /* Links */
+  a {
+    @apply transition-colors duration-fast;
+  }
+  
+  /* Imágenes responsive por defecto */
+  img {
+    @apply max-w-full h-auto;
+  }
+  
+  /* Inputs base */
+  input, select, textarea {
+    @apply font-body;
+  }
+}
+
+/* ===========================
+   ACCESIBILIDAD
+   =========================== */
+@layer utilities {
+  /* Screen Reader Only - oculta visualmente pero mantiene accesible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Focus visible para usuarios de teclado */
+  .keyboard-user *:focus {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+  
+  /* Skip link (para navegación por teclado) */
+  .skip-link {
+    @apply sr-only;
+    @apply focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50;
+    @apply bg-primary text-white px-4 py-2 rounded;
+  }
+}
+
+/* ===========================
+   COMPONENTES REUTILIZABLES
+   =========================== */
+@layer components {
+  /* Contenedor principal */
+  .container-custom {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Sección con padding vertical */
+  .section-padding {
+    @apply py-section md:py-section-md lg:py-section-lg;
+  }
+  
+  /* Card base */
+  .card {
+    @apply border border-gray-200 rounded-lg overflow-hidden;
+    @apply transition-shadow duration-normal;
+    @apply hover:shadow-card-hover;
+  }
+  
+  /* Botón primario */
+  .btn-primary {
+    @apply bg-primary text-white;
+    @apply px-8 py-3 rounded;
+    @apply font-medium uppercase tracking-wider text-sm;
+    @apply transition-colors duration-fast;
+    @apply hover:bg-primary-light;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+  
+  /* Botón secundario */
+  .btn-secondary {
+    @apply border-2 border-primary text-primary bg-transparent;
+    @apply px-8 py-3 rounded;
+    @apply font-medium uppercase tracking-wider text-sm;
+    @apply transition-all duration-fast;
+    @apply hover:bg-primary hover:text-white;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+  
+  /* Badge de descuento */
+  .badge-discount {
+    @apply inline-block bg-red-600 text-white;
+    @apply px-2 py-1 rounded text-xs font-bold uppercase;
+  }
+  
+  /* Badge "Nuevo" */
+  .badge-new {
+    @apply inline-block bg-accent text-white;
+    @apply px-2 py-1 rounded text-xs font-bold uppercase;
+  }
+  
+  /* Precio original tachado */
+  .price-original {
+    @apply text-gray-500 line-through text-sm;
+  }
+  
+  /* Precio final destacado */
+  .price-final {
+    @apply text-primary font-bold text-xl;
+  }
+}
+
+/* ===========================
+   ANIMACIONES PERSONALIZADAS
+   =========================== */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+}
+
+/* ===========================
+   ARIA LIVE REGION
+   =========================== */
+#aria-live-region {
+  @apply sr-only;
+}
+
+/* ===========================
+   SCROLLBAR PERSONALIZADO (Opcional)
+   =========================== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-light;
+}
+
+/* ===========================
+   ESTADOS DE CARGA
+   =========================== */
+@layer components {
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+}
+
+/* ===========================
+   UTILIDADES CUSTOM
+   =========================== */
+@layer utilities {
+  /* Aspect ratio para imágenes de productos */
+  .aspect-product {
+    aspect-ratio: 3 / 4;
+  }
+  
+  /* Truncar texto en múltiples líneas */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Opcional: reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Cargar Bebas Neue desde Google Fonts (o desde assets) */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
