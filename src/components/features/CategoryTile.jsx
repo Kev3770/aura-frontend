@@ -1,124 +1,55 @@
-// src/components/ui/BackendWakeup.jsx
+// src/components/features/CategoryTile.jsx
 
-import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const BackendWakeup = () => {
-  const [dots, setDots] = useState('');
-  const [tip, setTip] = useState(0);
-
-  const tips = [
-    '💡 Estamos despertando el servidor...',
-    '⏰ El backend gratuito se pausa tras 15 minutos de inactividad',
-    '🚀 Solo tomará unos segundos más...',
-    '☕ Momento perfecto para un café',
-    '✨ Cargando tus productos favoritos...'
-  ];
-
-  useEffect(() => {
-    // Animación de puntos
-    const dotsInterval = setInterval(() => {
-      setDots(prev => (prev.length >= 3 ? '' : prev + '.'));
-    }, 500);
-
-    // Cambiar tips cada 3 segundos
-    const tipInterval = setInterval(() => {
-      setTip(prev => (prev + 1) % tips.length);
-    }, 3000);
-
-    return () => {
-      clearInterval(dotsInterval);
-      clearInterval(tipInterval);
-    };
-  }, []);
-
+const CategoryTile = ({ category, productCount }) => {
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-primary-dark to-gray-900 z-50 flex items-center justify-center">
-      {/* Patrón de fondo */}
-      <div className="absolute inset-0 opacity-10">
-        <div 
-          className="absolute top-0 left-0 w-full h-full" 
-          style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }} 
+    <Link
+      to={`/productos?categoria=${category.id}`}
+      className="group relative block overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+    >
+      {/* Imagen de fondo */}
+      <div className="relative h-64 overflow-hidden">
+        <img
+          src={category.image}
+          alt={category.displayName}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
         />
+        
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
       </div>
 
       {/* Contenido */}
-      <div className="relative z-10 text-center px-4 max-w-md">
-        {/* Logo animado */}
-        <div className="mb-8 relative">
-          <div className="w-24 h-24 mx-auto relative">
-            {/* Círculos pulsantes */}
-            <div className="absolute inset-0 rounded-full bg-accent opacity-20 animate-ping"></div>
-            <div className="absolute inset-0 rounded-full bg-accent opacity-40 animate-pulse"></div>
-            
-            {/* Logo central */}
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl">
-              <span className="text-white font-display text-3xl font-bold">A</span>
-            </div>
+      <div className="absolute inset-0 flex flex-col justify-end p-6">
+        <h3 className="text-2xl font-display uppercase text-white mb-2 tracking-wider transform transition-transform duration-300 group-hover:translate-y-[-4px]">
+          {category.displayName}
+        </h3>
+        <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+          {category.description}
+        </p>
+        <div className="flex items-center justify-between">
+          <span className="text-accent font-semibold text-sm">
+            {productCount} {productCount === 1 ? 'producto' : 'productos'}
+          </span>
+          <div className="flex items-center text-white text-sm font-medium group-hover:text-accent transition-colors">
+            Ver más
+            <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </div>
-        </div>
-
-        {/* Título */}
-        <h2 className="text-3xl font-display uppercase text-white mb-2 tracking-wider">
-          AURA
-        </h2>
-        <p className="text-gray-300 text-lg mb-8">
-          Moda Masculina Premium
-        </p>
-
-        {/* Barra de progreso */}
-        <div className="mb-6">
-          <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-[shimmer_2s_infinite]"></div>
-          </div>
-        </div>
-
-        {/* Mensaje con animación */}
-        <p className="text-white text-base mb-2 font-medium min-h-[24px] transition-all duration-300">
-          {tips[tip]}{dots}
-        </p>
-
-        {/* Tips adicionales */}
-        <p className="text-gray-400 text-sm">
-          Esto solo sucede la primera vez después de un período de inactividad
-        </p>
-
-        {/* Indicador visual adicional */}
-        <div className="mt-8 flex justify-center gap-2">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="w-2 h-2 rounded-full bg-accent"
-              style={{
-                animation: `bounce 1.4s infinite ease-in-out ${i * 0.16}s`
-              }}
-            />
-          ))}
         </div>
       </div>
 
-      {/* CSS personalizado para animaciones */}
-      <style>{`
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        
-        @keyframes bounce {
-          0%, 80%, 100% { 
-            transform: scale(0);
-            opacity: 0.5;
-          }
-          40% { 
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-      `}</style>
-    </div>
+      {/* Badge de conteo (opcional) */}
+      {productCount > 0 && (
+        <div className="absolute top-4 right-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+          {productCount}
+        </div>
+      )}
+    </Link>
   );
 };
 
-export default BackendWakeup;
+export default CategoryTile;
