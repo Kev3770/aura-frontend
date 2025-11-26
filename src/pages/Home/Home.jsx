@@ -1,19 +1,29 @@
 // src/pages/Home/Home.jsx
 
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Hero from '../../components/layout/Hero';
 import ProductCard from '../../components/features/ProductCard';
 import CategoryTile from '../../components/features/CategoryTile';
 import Button from '../../components/ui/Button';
 import BackendWakeup from '../../components/ui/BackendWakeup';
 import { useAdmin } from '../../context/AdminContext';
+import { useTheme } from '../../context/ThemeContext';
 import { categoriesMetadata } from '../../data/categories';
 import { filterByCategory } from '../../data/helpers/filterProducts';
 
 const Home = () => {
   const { products, isLoading } = useAdmin();
+  const { isDark } = useTheme();
+  const [scrollY, setScrollY] = useState(0);
   
-  // Mostrar loading screen si está cargando y no hay productos
+  // Efecto parallax en scroll
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
   if (isLoading && products.length === 0) {
     return <BackendWakeup />;
   }
@@ -27,88 +37,122 @@ const Home = () => {
   }));
 
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
+    <div className={`min-h-screen overflow-hidden transition-colors duration-500 ${
+      isDark ? 'bg-zinc-950' : 'bg-white'
+    }`}>
       <Hero />
 
       {/* Productos Destacados */}
-      <section className="section-padding bg-gradient-to-br from-white via-gray-50 to-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-accent/5 to-primary/5 rounded-full blur-3xl" />
+      <section className={`relative py-24 md:py-32 overflow-hidden transition-colors duration-500 ${
+        isDark 
+          ? 'bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950' 
+          : 'bg-gradient-to-b from-white via-zinc-50 to-white'
+      }`}>
+        <div className="absolute inset-0 opacity-20" style={{ transform: `translateY(${scrollY * 0.1}px)` }}>
+          <div className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse ${
+            isDark ? 'bg-amber-600/20' : 'bg-amber-600/30'
+          }`} />
+          <div className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse ${
+            isDark ? 'bg-orange-600/20' : 'bg-orange-600/30'
+          }`} style={{ animationDelay: '1s' }} />
+        </div>
         
         <div className="container-custom relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-block mb-6">
-              <h2 className="text-display-md mb-4 bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
-                Productos Destacados
+          <div className="text-center mb-20">
+            <div className="inline-flex flex-col items-center">
+              <span className="text-sm tracking-[0.3em] uppercase text-amber-600 font-light mb-4 animate-fade-in">
+                Selección Premium
+              </span>
+              <h2 className={`text-5xl md:text-7xl font-light tracking-tight mb-6 animate-fade-in-up transition-colors duration-500 ${
+                isDark ? 'text-white' : 'text-zinc-900'
+              }`}>
+                Destacados
               </h2>
-              <div className="h-1 bg-gradient-to-r from-primary to-accent rounded-full" />
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-amber-600 to-transparent animate-fade-in" />
             </div>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-              Nuestra selección premium de prendas masculinas. 
-              Calidad excepcional y estilo atemporal.
+            <p className={`max-w-2xl mx-auto mt-8 text-lg leading-relaxed font-light animate-fade-in-up transition-colors duration-500 ${
+              isDark ? 'text-zinc-400' : 'text-zinc-600'
+            }`} style={{ animationDelay: '0.2s' }}>
+              Calidad excepcional. Estilo atemporal. Nuestra selección curada de prendas masculinas premium.
             </p>
           </div>
 
           {featuredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-              {featuredProducts.map(product => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {featuredProducts.map((product, index) => (
                 <div 
                   key={product.id} 
-                  className="transform transition-all duration-300 hover:scale-105 hover:z-10"
+                  className="group animate-fade-in-up hover:scale-[1.02] transition-all duration-500"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <ProductCard product={product} />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-              <p className="text-gray-500 text-lg">No hay productos destacados disponibles</p>
+            <div className="text-center py-20 animate-fade-in">
+              <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center transition-colors duration-500 ${
+                isDark ? 'bg-zinc-900' : 'bg-zinc-100'
+              }`}>
+                <svg className={`w-10 h-10 transition-colors duration-500 ${
+                  isDark ? 'text-zinc-700' : 'text-zinc-400'
+                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <p className={`text-lg font-light transition-colors duration-500 ${
+                isDark ? 'text-zinc-500' : 'text-zinc-600'
+              }`}>No hay productos destacados disponibles</p>
             </div>
           )}
 
-          <div className="text-center">
+          <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Link to="/productos">
               <Button variant="primary" size="lg">
-                Ver Todos los Productos
+                Explorar Colección Completa
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Categorías - Mejorado */}
-      <section className="section-padding bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '40px 40px'
+      {/* Categorías */}
+      <section className={`relative py-24 md:py-32 overflow-hidden transition-colors duration-500 ${
+        isDark ? 'bg-zinc-950' : 'bg-zinc-50'
+      }`}>
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `linear-gradient(${isDark ? '#fff' : '#000'} 1px, transparent 1px), linear-gradient(90deg, ${isDark ? '#fff' : '#000'} 1px, transparent 1px)`,
+            backgroundSize: '50px 50px'
           }} />
         </div>
         
         <div className="container-custom relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-block mb-6">
-              <h2 className="text-display-md mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Explora por Categoría
+          <div className="text-center mb-20">
+            <div className="inline-flex flex-col items-center">
+              <span className="text-sm tracking-[0.3em] uppercase text-amber-600 font-light mb-4 animate-fade-in">
+                Encuentra tu estilo
+              </span>
+              <h2 className={`text-5xl md:text-7xl font-light tracking-tight mb-6 animate-fade-in-up transition-colors duration-500 ${
+                isDark ? 'text-white' : 'text-zinc-900'
+              }`}>
+                Categorías
               </h2>
-              <div className="h-1 bg-gradient-to-r from-accent to-primary rounded-full" />
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-amber-600 to-transparent animate-fade-in" />
             </div>
-            <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed">
-              Encuentra exactamente lo que buscas. 
-              Cada categoría está cuidadosamente curada para ti.
+            <p className={`max-w-2xl mx-auto mt-8 text-lg leading-relaxed font-light animate-fade-in-up transition-colors duration-500 ${
+              isDark ? 'text-zinc-400' : 'text-zinc-600'
+            }`} style={{ animationDelay: '0.2s' }}>
+              Cada categoría cuidadosamente curada. Descubre el universo completo de estilos masculinos.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {categoriesWithCount.slice(0, 6).map((category, index) => (
               <div 
                 key={category.id} 
-                className="transform transition-all duration-300 hover:scale-105 hover:z-10"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="group animate-fade-in-up hover:scale-[1.02] transition-all duration-500"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CategoryTile
                   category={category}
@@ -121,48 +165,74 @@ const Home = () => {
       </section>
 
       {/* Novedades */}
-      <section className="section-padding bg-gradient-to-br from-white via-gray-50 to-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-accent/5 to-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-3xl" />
+      <section className={`relative py-24 md:py-32 overflow-hidden transition-colors duration-500 ${
+        isDark 
+          ? 'bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950' 
+          : 'bg-gradient-to-b from-white via-zinc-50 to-white'
+      }`}>
+        <div className="absolute inset-0 opacity-20">
+          <div className={`absolute top-0 right-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse ${
+            isDark ? 'bg-green-600/20' : 'bg-green-600/30'
+          }`} />
+          <div className={`absolute bottom-0 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse ${
+            isDark ? 'bg-teal-600/20' : 'bg-teal-600/30'
+          }`} style={{ animationDelay: '1s' }} />
+        </div>
         
         <div className="container-custom relative z-10">
-          <div className="text-center mb-16">
-            <span className="badge-new inline-block mb-6 shadow-lg transform hover:scale-110 transition-transform duration-300">
-              Nuevo
-            </span>
-            <div className="inline-block mb-6">
-              <h2 className="text-display-md mb-4 bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
-                Recién Llegados
+          <div className="text-center mb-20">
+            <div className="inline-flex flex-col items-center">
+              <div className="inline-flex items-center gap-3 mb-6">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-sm tracking-[0.3em] uppercase text-green-500 font-light animate-fade-in">
+                  Recién Llegados
+                </span>
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              </div>
+              <h2 className={`text-5xl md:text-7xl font-light tracking-tight mb-6 animate-fade-in-up transition-colors duration-500 ${
+                isDark ? 'text-white' : 'text-zinc-900'
+              }`}>
+                Novedades
               </h2>
-              <div className="h-1 bg-gradient-to-r from-primary to-accent rounded-full" />
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-green-500 to-transparent animate-fade-in" />
             </div>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-              Las últimas tendencias en moda masculina. 
-              Sé el primero en lucir nuestras nuevas colecciones.
+            <p className={`max-w-2xl mx-auto mt-8 text-lg leading-relaxed font-light animate-fade-in-up transition-colors duration-500 ${
+              isDark ? 'text-zinc-400' : 'text-zinc-600'
+            }`} style={{ animationDelay: '0.2s' }}>
+              Las últimas tendencias. Sé el primero en descubrir nuestras nuevas colecciones.
             </p>
           </div>
 
           {newProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-              {newProducts.map(product => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {newProducts.map((product, index) => (
                 <div 
                   key={product.id} 
-                  className="transform transition-all duration-300 hover:scale-105"
+                  className="group animate-fade-in-up hover:scale-[1.02] transition-all duration-500"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <ProductCard product={product} />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 mb-12">
-              <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-              <p className="text-gray-500 text-lg">No hay productos nuevos disponibles</p>
+            <div className="text-center py-20 mb-16 animate-fade-in">
+              <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center transition-colors duration-500 ${
+                isDark ? 'bg-zinc-900' : 'bg-zinc-100'
+              }`}>
+                <svg className={`w-10 h-10 transition-colors duration-500 ${
+                  isDark ? 'text-zinc-700' : 'text-zinc-400'
+                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
+              <p className={`text-lg font-light transition-colors duration-500 ${
+                isDark ? 'text-zinc-500' : 'text-zinc-600'
+              }`}>No hay productos nuevos disponibles</p>
             </div>
           )}
 
-          <div className="text-center">
+          <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Link to="/productos?nuevos=true">
               <Button variant="secondary" size="lg">
                 Ver Todas las Novedades
@@ -172,30 +242,32 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Banner CTA - Mejorado */}
-      <section className="bg-gradient-to-br from-primary via-primary-dark to-accent text-white py-24 relative overflow-hidden">
+      {/* Banner CTA */}
+      <section className="relative py-32 overflow-hidden bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full" style={{
+          <div className="absolute inset-0" style={{
             backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '30px 30px'
+            backgroundSize: '40px 40px'
           }} />
         </div>
 
-        {/* Elementos decorativos flotantes */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse" />
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}} />
         
         <div className="container-custom text-center relative z-10">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-display-md mb-6 drop-shadow-lg font-bold">
+            <span className="text-sm tracking-[0.3em] uppercase text-amber-100 font-light mb-6 block animate-fade-in">
+              Estamos aquí para ti
+            </span>
+            <h2 className="text-5xl md:text-6xl font-light tracking-tight text-white mb-8 animate-fade-in-up">
               ¿Necesitas Ayuda?
             </h2>
-            <p className="text-gray-100 text-xl mb-10 leading-relaxed drop-shadow">
-              Nuestro equipo está listo para asesorarte en tu próxima compra. 
-              Contáctanos y encuentra el estilo perfecto que se adapte a tu personalidad.
+            <div className="w-24 h-px bg-white/40 mx-auto mb-8 animate-fade-in" />
+            <p className="text-amber-50 text-xl font-light mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              Nuestro equipo está listo para asesorarte. Encuentra el estilo perfecto que se adapte a tu personalidad.
             </p>
-            <Link to="/contacto">
-              <Button variant="secondary" size="lg" className="shadow-2xl hover:shadow-accent/50">
+            <Link to="/contacto" className="animate-fade-in-up inline-block" style={{ animationDelay: '0.3s' }}>
+              <Button variant="secondary" size="lg" className="shadow-2xl hover:shadow-white/20">
                 Contactar Ahora
               </Button>
             </Link>
@@ -203,96 +275,92 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features/Beneficios - Mejorado */}
-      <section className="section-padding bg-gradient-to-br from-white via-gray-50 to-white">
+      {/* Features/Beneficios */}
+      <section className={`relative py-24 md:py-32 transition-colors duration-500 ${
+        isDark ? 'bg-zinc-950' : 'bg-white'
+      }`}>
         <div className="container-custom">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-display uppercase mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              ¿Por Qué Elegirnos?
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Comprometidos con tu satisfacción en cada compra
-            </p>
+          <div className="text-center mb-20">
+            <div className="inline-flex flex-col items-center">
+              <span className="text-sm tracking-[0.3em] uppercase text-amber-600 font-light mb-4 animate-fade-in">
+                Comprometidos contigo
+              </span>
+              <h2 className={`text-4xl md:text-5xl font-light tracking-tight mb-6 animate-fade-in-up transition-colors duration-500 ${
+                isDark ? 'text-white' : 'text-zinc-900'
+              }`}>
+                ¿Por Qué Elegirnos?
+              </h2>
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-amber-600 to-transparent animate-fade-in" />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Envío gratis */}
-            <div className="text-center group">
-              <div className="w-24 h-24 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                <svg
-                  className="w-12 h-12 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+            {[
+              {
+                icon: (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                   />
-                </svg>
-              </div>
-              <h3 className="text-xl font-display uppercase mb-3 tracking-wider bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Envío Gratis
-              </h3>
-              <p className="text-gray-600 text-base leading-relaxed">
-                En compras superiores a <strong className="text-primary">$150,000</strong><br/>
-                Recibe tus productos sin costo adicional
-              </p>
-            </div>
-
-            {/* Devoluciones */}
-            <div className="text-center group">
-              <div className="w-24 h-24 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                <svg
-                  className="w-12 h-12 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                ),
+                title: 'Envío Gratis',
+                description: 'En compras superiores a',
+                highlight: '$150,000',
+                extra: 'Recibe tus productos sin costo adicional.'
+              },
+              {
+                icon: (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
-                </svg>
-              </div>
-              <h3 className="text-xl font-display uppercase mb-3 tracking-wider bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Devoluciones Fáciles
-              </h3>
-              <p className="text-gray-600 text-base leading-relaxed">
-                Hasta <strong className="text-primary">30 días</strong> para cambios y devoluciones<br/>
-                Sin preguntas, sin complicaciones
-              </p>
-            </div>
-
-            {/* Soporte */}
-            <div className="text-center group">
-              <div className="w-24 h-24 bg-gradient-to-br from-accent to-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                <svg
-                  className="w-12 h-12 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                ),
+                title: 'Devoluciones Fáciles',
+                description: 'Hasta',
+                highlight: '30 días',
+                extra: 'para cambios. Sin preguntas, sin complicaciones.'
+              },
+              {
+                icon: (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
                   />
-                </svg>
+                ),
+                title: 'Soporte 24/7',
+                description: 'Asistencia personalizada',
+                highlight: 'cuando la necesites',
+                extra: 'Siempre aquí para ayudarte.'
+              }
+            ].map((feature, index) => (
+              <div key={index} className="text-center group animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="relative w-24 h-24 mx-auto mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-20 blur-xl" />
+                  <div className="relative w-full h-full bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">
+                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {feature.icon}
+                    </svg>
+                  </div>
+                </div>
+                <h3 className={`text-2xl font-light tracking-wide mb-4 transition-colors duration-500 ${
+                  isDark ? 'text-white' : 'text-zinc-900'
+                }`}>
+                  {feature.title}
+                </h3>
+                <div className="w-12 h-px bg-amber-600/40 mx-auto mb-4" />
+                <p className={`text-base leading-relaxed font-light max-w-xs mx-auto transition-colors duration-500 ${
+                  isDark ? 'text-zinc-400' : 'text-zinc-600'
+                }`}>
+                  {feature.description} <span className="text-amber-600 font-normal">{feature.highlight}</span>. {feature.extra}
+                </p>
               </div>
-              <h3 className="text-xl font-display uppercase mb-3 tracking-wider bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Soporte 24/7
-              </h3>
-              <p className="text-gray-600 text-base leading-relaxed">
-                Asistencia personalizada <strong className="text-primary">cuando la necesites</strong><br/>
-                Siempre aquí para ayudarte
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>

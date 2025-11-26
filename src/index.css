@@ -11,3 +11,65 @@
 
 /* Cargar Bebas Neue desde Google Fonts (o desde assets) */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+/* Agrega esto a tu archivo CSS global (index.css o App.css) */
+
+/* Animaciones para fade-in */
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+  }
+  to { 
+    opacity: 1; 
+  }
+}
+
+@keyframes fade-in-up {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Clases de animación */
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Transiciones suaves globales */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mejora el scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optimización de rendimiento para animaciones */
+.animate-fade-in,
+.animate-fade-in-up {
+  will-change: opacity, transform;
+}
+
+/* Soporte para prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
