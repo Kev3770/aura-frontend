@@ -8,6 +8,7 @@ import { ToastProvider } from './context/ToastContext';
 import { CartProvider } from './context/CartContext';
 import { AdminProvider } from './context/AdminContext';
 import { AuthProvider } from './context/AuthContext';
+import { ProductProvider } from './context/ProductContext'; // ← NUEVO
 
 // Layout
 import Header from './components/layout/Header';
@@ -75,98 +76,109 @@ function App() {
     <Router>
       <ToastProvider>
         <AuthProvider>
-          <CartProvider>
-            <AdminProvider>
-              <div className="flex flex-col min-h-screen">
-                
-                <Header />
 
-                <main id="main-content" className="flex-1" tabIndex="-1">
-                  <ScrollToTop />
+          {/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */}
+          {/* ⚠️ AQUÍ VA ProductProvider */}
+          <ProductProvider>
+          {/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */}
 
-                  <Routes>
+            <CartProvider>
+              <AdminProvider>
+                <div className="flex flex-col min-h-screen">
+                  
+                  <Header />
 
-                    {/* ============================
-                        RUTAS PÚBLICAS
-                    ============================ */}
+                  <main id="main-content" className="flex-1" tabIndex="-1">
+                    <ScrollToTop />
 
-                    <Route path="/" element={<Home />} />
+                    <Routes>
 
-                    {/* Productos */}
-                    <Route path="/productos" element={<Products />} />
-                    <Route path="/productos/:slug" element={<ProductDetail />} />
+                      {/* ============================
+                          RUTAS PÚBLICAS
+                      ============================ */}
 
-                    {/* Carrito */}
-                    <Route path="/carrito" element={<Cart />} />
+                      <Route path="/" element={<Home />} />
 
-                    {/* Contacto */}
-                    <Route path="/contacto" element={<Contact />} />
+                      {/* Productos */}
+                      <Route path="/productos" element={<Products />} />
+                      <Route path="/productos/:slug" element={<ProductDetail />} />
 
-                    {/* Login general */}
-                    <Route path="/login" element={<Login />} />
+                      {/* Carrito */}
+                      <Route path="/carrito" element={<Cart />} />
 
-                    {/* Login para admins (ruta agregada) */}
-                    <Route path="/admin/login" element={<Login />} />
+                      {/* Contacto */}
+                      <Route path="/contacto" element={<Contact />} />
+
+                      {/* Login general */}
+                      <Route path="/login" element={<Login />} />
+
+                      {/* Login para admins */}
+                      <Route path="/admin/login" element={<Login />} />
 
 
-                    {/* ============================
-                        RUTAS PROTEGIDAS ADMIN
-                    ============================ */}
+                      {/* ============================
+                          RUTAS PROTEGIDAS ADMIN
+                      ============================ */}
 
-                    <Route
-                      path="/admin"
-                      element={
-                        <ProtectedRoute>
-                          <Admin />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin"
+                        element={
+                          <ProtectedRoute>
+                            <Admin />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/admin/productos"
-                      element={
-                        <ProtectedRoute>
-                          <ProductList />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin/productos"
+                        element={
+                          <ProtectedRoute>
+                            <ProductList />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/admin/productos/nuevo"
-                      element={
-                        <ProtectedRoute>
-                          <ProductForm />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin/productos/nuevo"
+                        element={
+                          <ProtectedRoute>
+                            <ProductForm />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/admin/productos/editar/:productId"
-                      element={
-                        <ProtectedRoute>
-                          <ProductForm />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin/productos/editar/:productId"
+                        element={
+                          <ProtectedRoute>
+                            <ProductForm />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/admin/estadisticas"
-                      element={
-                        <ProtectedRoute>
-                          <ProductStats />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin/estadisticas"
+                        element={
+                          <ProtectedRoute>
+                            <ProductStats />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
+                      {/* 404 */}
+                      <Route path="*" element={<NotFound />} />
 
-                <Footer />
-              </div>
-            </AdminProvider>
-          </CartProvider>
+                    </Routes>
+                  </main>
+
+                  <Footer />
+                </div>
+              </AdminProvider>
+            </CartProvider>
+
+          </ProductProvider> 
+          {/* ← CIERRE DEL PROVIDER */}
+
         </AuthProvider>
       </ToastProvider>
     </Router>
