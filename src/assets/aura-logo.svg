@@ -1,0 +1,125 @@
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente dorado líquido -->
+    <linearGradient id="liquidGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF6A"/>
+      <stop offset="50%" style="stop-color:#C8A96C"/>
+      <stop offset="100%" style="stop-color:#B89968"/>
+    </linearGradient>
+    
+    <!-- Resplandor atmosférico -->
+    <radialGradient id="atmosphericGlow">
+      <stop offset="0%" style="stop-color:#C8A96C;stop-opacity:0.08"/>
+      <stop offset="100%" style="stop-color:#C8A96C;stop-opacity:0"/>
+    </radialGradient>
+    
+    <!-- Sombra profunda editorial -->
+    <filter id="editorialShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Atmósfera de fondo -->
+  <circle cx="250" cy="250" r="180" fill="url(#atmosphericGlow)"/>
+  
+  <!-- Marco arquitectónico minimalista -->
+  <g stroke="#0D0D0D" stroke-width="0.8" fill="none" opacity="0.15">
+    <circle cx="250" cy="250" r="160"/>
+    <circle cx="250" cy="250" r="155"/>
+  </g>
+  
+  <!-- Símbolo central: "A" como arquitectura -->
+  <g transform="translate(250, 240)" filter="url(#editorialShadow)">
+    
+    <!-- Base triangular - estructura principal -->
+    <path d="M 0,-85 L -70,80 L 70,80 Z" 
+          fill="none" 
+          stroke="#0D0D0D" 
+          stroke-width="2.5"
+          stroke-linejoin="miter"/>
+    
+    <!-- Espacio negativo interior - lo que hace único al logo -->
+    <path d="M 0,-65 L -50,65 L 50,65 Z" 
+          fill="#FFFFFF" 
+          stroke="none"/>
+    
+    <!-- Línea horizontal dorada - el "aura" del logo -->
+    <line x1="-45" y1="25" x2="45" y2="25" 
+          stroke="url(#liquidGold)" 
+          stroke-width="4" 
+          stroke-linecap="round"/>
+    
+    <!-- Detalle superior - punto de distinción -->
+    <circle cx="0" cy="-95" r="4" 
+            fill="url(#liquidGold)"/>
+    
+    <!-- Líneas internas arquitectónicas -->
+    <g opacity="0.3">
+      <line x1="-30" y1="45" x2="30" y2="45" 
+            stroke="#0D0D0D" 
+            stroke-width="0.5"/>
+      <line x1="-15" y1="60" x2="15" y2="60" 
+            stroke="#0D0D0D" 
+            stroke-width="0.5"/>
+    </g>
+    
+  </g>
+  
+  <!-- AURA - Tipografía ultra-espaciada editorial -->
+  <text x="250" y="375" 
+        font-family="'Söhne', 'Neue Montreal', sans-serif" 
+        font-size="52" 
+        fill="#0D0D0D" 
+        text-anchor="middle"
+        letter-spacing="24"
+        font-weight="300">
+    AURA
+  </text>
+  
+  <!-- Línea base con geometría precisa -->
+  <g stroke="url(#liquidGold)" stroke-width="1.5" stroke-linecap="square" opacity="0.6">
+    <line x1="145" y1="392" x2="355" y2="392"/>
+  </g>
+  
+  <!-- Sistema de coordenadas minimalista - detalles editoriales -->
+  <g stroke="#0D0D0D" stroke-width="0.5" opacity="0.1">
+    <!-- Líneas verticales sutiles -->
+    <line x1="250" y1="80" x2="250" y2="90"/>
+    <line x1="250" y1="410" x2="250" y2="420"/>
+    
+    <!-- Marcas laterales -->
+    <line x1="80" y1="250" x2="90" y2="250"/>
+    <line x1="410" y1="250" x2="420" y2="250"/>
+  </g>
+  
+  <!-- Puntos de registro - detalles profesionales -->
+  <g fill="url(#liquidGold)" opacity="0.25">
+    <circle cx="120" cy="120" r="1.5"/>
+    <circle cx="380" cy="120" r="1.5"/>
+    <circle cx="120" cy="380" r="1.5"/>
+    <circle cx="380" cy="380" r="1.5"/>
+  </g>
+  
+  <!-- Marca de autenticidad minimalista -->
+  <g transform="translate(250, 415)">
+    <circle cx="0" cy="0" r="2" fill="url(#liquidGold)" opacity="0.4"/>
+    <text x="0" y="12" 
+          font-family="'Söhne', sans-serif" 
+          font-size="7" 
+          fill="#0D0D0D" 
+          text-anchor="middle"
+          letter-spacing="2"
+          font-weight="300"
+          opacity="0.3">
+      MMXXV
+    </text>
+  </g>
+</svg>

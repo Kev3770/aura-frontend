@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -31,6 +31,11 @@ const Header = () => {
   const navigate = useNavigate();
   const cartItemCount = getTotalItems();
 
+  // Refs y timeout para dropdown
+  const categoriesButtonRef = useRef(null);
+  const categoriesDropdownRef = useRef(null);
+  const closeTimeoutRef = useRef(null);
+
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const toggleCategories = () => setIsCategoriesOpen(!isCategoriesOpen);
 
@@ -47,10 +52,29 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const handleGoToStore = () => {
-    navigate('/');
-    setIsMobileMenuOpen(false);
+  // Funciones para manejar el dropdown con delay
+  const handleCategoriesMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setIsCategoriesOpen(true);
   };
+
+  const handleCategoriesMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setIsCategoriesOpen(false);
+    }, 300);
+  };
+
+  // Limpiar timeout al desmontar
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <header className={`${
@@ -70,7 +94,7 @@ const Header = () => {
             aria-label="Aura - Ir al inicio"
           >
             <span className="relative group">
-              <span className={`absolute -inset-2 bg-gradient-to-r from-amber-600 to-orange-600 blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
+              <span className="absolute -inset-2 bg-gradient-to-r from-amber-600 to-orange-600 blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
               <span className="relative">AURA</span>
             </span>
           </Link>
@@ -106,29 +130,34 @@ const Header = () => {
               {isActive('/productos') && <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent" />}
             </Link>
 
-            {/* Categorías - Dropdown */}
-            <div className="relative">
+            {/* Categorías - Dropdown MEJORADO */}
+            <div 
+              className="relative"
+              ref={categoriesButtonRef}
+            >
               <button 
                 className={`group flex items-center gap-2 text-xs uppercase tracking-[0.15em] transition-all duration-300 font-light ${
                   isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-900'
                 }`}
-                onMouseEnter={() => setIsCategoriesOpen(true)}
-                onMouseLeave={() => setIsCategoriesOpen(false)}
+                onMouseEnter={handleCategoriesMouseEnter}
+                onMouseLeave={handleCategoriesMouseLeave}
               >
                 <FaTags className="text-[10px] group-hover:scale-110 transition-transform duration-300" />
                 Categorías
                 <FaChevronDown className={`text-[10px] transition-all duration-300 ${isCategoriesOpen ? 'rotate-180 text-amber-500' : ''}`} />
               </button>
 
+              {/* Dropdown con mejor UX */}
               {isCategoriesOpen && (
                 <div 
-                  className={`absolute left-0 mt-4 w-64 backdrop-blur-xl border rounded-2xl shadow-2xl py-3 z-50 animate-fade-in ${
+                  ref={categoriesDropdownRef}
+                  className={`absolute left-0 mt-2 w-64 backdrop-blur-xl border rounded-2xl shadow-2xl py-3 z-50 animate-fade-in ${
                     isDark 
                       ? 'bg-zinc-900/95 border-zinc-800/50' 
                       : 'bg-white/95 border-zinc-200/50 shadow-xl'
                   }`}
-                  onMouseEnter={() => setIsCategoriesOpen(true)}
-                  onMouseLeave={() => setIsCategoriesOpen(false)}
+                  onMouseEnter={handleCategoriesMouseEnter}
+                  onMouseLeave={handleCategoriesMouseLeave}
                 >
                   {CATEGORIES.map((category, index) => (
                     <Link

@@ -75,7 +75,7 @@ const Hero = () => {
           <p className={`text-xl md:text-2xl font-light mb-12 max-w-2xl leading-relaxed animate-fade-in-up transition-colors duration-500 ${
             isDark ? 'text-zinc-400' : 'text-zinc-600'
           }`} style={{ animationDelay: '0.2s' }}>
-            Ropa masculina premium. Cada prenda cuenta una historia de calidad, 
+            Ropa masculina. Cada prenda cuenta una historia de calidad, 
             confianza y estilo atemporal.
           </p>
 

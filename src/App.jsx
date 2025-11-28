@@ -9,7 +9,7 @@ import { CartProvider } from './context/CartContext';
 import { AdminProvider } from './context/AdminContext';
 import { AuthProvider } from './context/AuthContext';
 import { ProductProvider } from './context/ProductContext';
-import { ThemeProvider } from './context/ThemeContext'; // 🔥 AGREGADO
+import { ThemeProvider } from './context/ThemeContext'; 
 
 // Layout
 import Header from './components/layout/Header';
